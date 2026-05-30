@@ -1,0 +1,26 @@
+# Read all parts
+with open('/mnt/agents/output/index_part1.html', 'r', encoding='utf-8') as f:
+    part1 = f.read()
+
+with open('/mnt/agents/output/index_part2.html', 'r', encoding='utf-8') as f:
+    part2 = f.read()
+
+with open('/mnt/agents/output/index_part3.html', 'r', encoding='utf-8') as f:
+    part3 = f.read()
+
+# Combine into final single file
+final_html = part1 + part2 + part3
+
+# Save as final index.html
+with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
+    f.write(final_html)
+
+# Clean up temp files
+import os
+os.remove('/mnt/agents/output/index_part1.html')
+os.remove('/mnt/agents/output/index_part2.html')
+os.remove('/mnt/agents/output/index_part3.html')
+
+print(f"✅ تم إنشاء ملف واحد: index.html")
+print(f"📊 حجم الملف: {len(final_html):,} حرف")
+print(f"📁 المسار: /mnt/agents/output/index.html")
