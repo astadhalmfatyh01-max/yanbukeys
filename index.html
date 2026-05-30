@@ -1,26 +1,1397 @@
-# Read all parts
-with open('/mnt/agents/output/index_part1.html', 'r', encoding='utf-8') as f:
-    part1 = f.read()
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أستاذ المفاتيح | 11 فرع - خدمات المفاتيح والأقفال 24 ساعة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a5f7a;
+            --primary-dark: #134b61;
+            --accent: #c84b31;
+            --accent-hover: #a83d27;
+            --gold: #d4a843;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --success: #10b981;
+        }
 
-with open('/mnt/agents/output/index_part2.html', 'r', encoding='utf-8') as f:
-    part2 = f.read()
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-with open('/mnt/agents/output/index_part3.html', 'r', encoding='utf-8') as f:
-    part3 = f.read()
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-# Combine into final single file
-final_html = part1 + part2 + part3
+        /* ===== WELCOME MODAL ===== */
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
 
-# Save as final index.html
-with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
-    f.write(final_html)
+        .welcome-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-# Clean up temp files
-import os
-os.remove('/mnt/agents/output/index_part1.html')
-os.remove('/mnt/agents/output/index_part2.html')
-os.remove('/mnt/agents/output/index_part3.html')
+        .welcome-modal {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: modalPop 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
 
-print(f"✅ تم إنشاء ملف واحد: index.html")
-print(f"📊 حجم الملف: {len(final_html):,} حرف")
-print(f"📁 المسار: /mnt/agents/output/index.html")
+        .welcome-modal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--gold), var(--primary));
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: keyRotate 2s ease-in-out infinite;
+        }
+
+        @keyframes keyRotate {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .welcome-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .welcome-text {
+            color: var(--gray);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .welcome-branches {
+            background: #f1f5f9;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: var(--dark);
+        }
+
+        .welcome-branches strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .welcome-close {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .welcome-close:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(26,95,122,0.4);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+        }
+
+        .top-bar {
+            background: rgba(0,0,0,0.2);
+            padding: 8px 0;
+            font-size: 0.85rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .top-bar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-contact {
+            display: flex;
+            gap: 20px;
+        }
+
+        .top-contact a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .top-contact a:hover {
+            color: var(--gold);
+        }
+
+        .header-main {
+            padding: 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gold);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--dark);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo-text h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-text p {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--gold);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* ===== EMERGENCY BANNER ===== */
+        .emergency-banner {
+            background: linear-gradient(90deg, var(--accent) 0%, #e74c3c 100%);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emergency-banner::after {
+            content: '⚡';
+            position: absolute;
+            left: 10%;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 4rem;
+            opacity: 0.1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.1; transform: translateY(-50%) scale(1); }
+            50% { opacity: 0.2; transform: translateY(-50%) scale(1.2); }
+        }
+
+        .emergency-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .emergency-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .emergency-text i {
+            margin-left: 10px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .emergency-btn {
+            background: white;
+            color: var(--accent);
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .emergency-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        /* ===== SERVICES ===== */
+        .section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .service-img {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .service-img::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+        }
+
+        .service-icon {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--dark);
+            z-index: 2;
+        }
+
+        .service-content {
+            padding: 25px;
+        }
+
+        .service-content h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .service-content p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* ===== BRANCHES ===== */
+        .branches-section {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+
+        .branches-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 50px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .branches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .branch-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border-right: 4px solid var(--primary);
+        }
+
+        .branch-card:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .branch-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .branch-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .branch-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .branch-location {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 3px;
+        }
+
+        .branch-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-call, .btn-whatsapp {
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .btn-call {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-call:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128c7e;
+            transform: translateY(-2px);
+        }
+
+        /* ===== ADMIN CARD ===== */
+        .admin-section {
+            background: var(--dark);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-section::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: var(--gold);
+            opacity: 0.1;
+            border-radius: 50%;
+        }
+
+        .admin-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 50px;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-card::after {
+            content: '👑';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+
+        .admin-label {
+            font-size: 1rem;
+            color: var(--gold);
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .admin-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            margin: 15px 0;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .admin-number a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .admin-number a:hover {
+            color: var(--gold);
+        }
+
+        .admin-desc {
+            color: rgba(255,255,255,0.7);
+            margin-top: 15px;
+        }
+
+        /* ===== FAQ ===== */
+        .faq-item {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--dark);
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f8fafc;
+        }
+
+        .faq-question i {
+            color: var(--primary);
+            transition: transform 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 0 30px 25px;
+        }
+
+        .faq-answer p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .footer-text {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 20px;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .social-link:hover {
+            background: var(--gold);
+            color: var(--dark);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.9rem;
+        }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== WHATSAPP FLOAT ===== */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25d366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 5px 20px rgba(37,211,102,0.4);
+            text-decoration: none;
+            z-index: 1000;
+            transition: all 0.3s;
+            animation: bounce 2s infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(37,211,102,0.6);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .welcome-modal {
+                padding: 30px 20px;
+            }
+
+            .welcome-title {
+                font-size: 1.4rem;
+            }
+
+            .header-main {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 0;
+            }
+
+            .logo-section {
+                flex-direction: column;
+            }
+
+            .stats-bar {
+                justify-content: center;
+            }
+
+            .stat-item {
+                padding: 10px 15px;
+            }
+
+            .stat-number {
+                font-size: 1.4rem;
+            }
+
+            .emergency-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .section-title h2 {
+                font-size: 1.6rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .branch-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-card {
+                padding: 30px 20px;
+            }
+
+            .admin-number {
+                font-size: 1.8rem;
+            }
+
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                bottom: 20px;
+                left: 20px;
+            }
+        }
+
+        /* Loading animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loader-icon {
+            font-size: 4rem;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Welcome Modal -->
+    <div class="welcome-overlay" id="welcomeModal">
+        <div class="welcome-modal">
+            <div class="welcome-icon">🔑</div>
+            <div class="welcome-title">أهلاً وسهلاً بكم</div>
+            <div class="welcome-text">
+                في <strong>مجموعة محلات أستاذ المفاتيح</strong><br>
+                خدمات المفاتيح والأقفال على مدار 24 ساعة
+            </div>
+            <div class="welcome-branches">
+                <strong>📍 فروعنا:</strong>
+                ينبع (شارع الحنان - الصناعية - نادي المجد - الشرم)<br>
+                أملج • رابغ • بدر • الوجه • مهد الذهب
+            </div>
+            <button class="welcome-close" onclick="closeWelcome()">
+                <i class="fas fa-arrow-left"></i> دخول الموقع
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-icon">🔑</div>
+            <h2>أستاذ المفاتيح</h2>
+            <p>جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="top-bar">
+            <div class="container">
+                <div class="top-bar-content">
+                    <div class="top-contact">
+                        <a href="tel:966590350017"><i class="fas fa-phone"></i> 0590350017</a>
+                        <a href="https://wa.me/966530582280" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                    </div>
+                    <div>خدمة 24 ساعة - نصلك أينما كنت</div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="header-main">
+                <div class="logo-section">
+                    <div class="logo-icon">🔑</div>
+                    <div class="logo-text">
+                        <h1>أستاذ المفاتيح</h1>
+                        <p>مجموعة محلات متخصصة في المفاتيح والأقفال</p>
+                    </div>
+                </div>
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-number">11</span>
+                        <span class="stat-label">فرع</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">طوارئ</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">20+</span>
+                        <span class="stat-label">سنة خبرة</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Emergency Banner -->
+    <div class="emergency-banner">
+        <div class="container">
+            <div class="emergency-content">
+                <div class="emergency-text">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    طوارئ 24 ساعة - فتح أبواب - برمجة ريموتات - خدمة سريعة
+                </div>
+                <a href="tel:966590350017" class="emergency-btn">
+                    <i class="fas fa-phone-alt"></i>
+                    اتصل الآن: 0590350017
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>خدماتنا المتميزة</h2>
+                <p>نقدم جميع خدمات المفاتيح والأقفال بأحدث الأجهزة وأفضل الخامات</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600');">
+                        <div class="service-icon"><i class="fas fa-car-key"></i></div>
+                    </div>
+                    <div class="service-content">
+                        <h3>برمجة ريموتات السيارات</h3>
+                        <p>برمجة ونسخ ريموتات جميع أنواع السيارات بأحدث الأجهزة الالكترونية مع ضمان على البرمجة. نخدم تويوتا، نيسان، هيونداي، فورد، لكزس وغيرها.</p>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=600');">
+                        <div class="service-icon"><i class="fas fa-key"></i></div>
+                    </div>
+                    <div class="service-content">
+                        <h3>نسخ وقص المفاتيح</h3>
+                        <p>نسخ دقيق لجميع أنواع المفاتيح (منزلية، سيارات، خزائن) باستخدام أجهزة قص حديثة تضمن مطابقة تامة للمفتاح الأصلي.</p>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600');">
+                        <div class="service-icon"><i class="fas fa-lock"></i></div>
+                    </div>
+                    <div class="service-content">
+                        <h3>فتح الأبواب والخزائن</h3>
+                        <p>فتح احترافي لأبواب المنازل والسيارات والخزائن بدون أي تلف أو خدش. خدمة طوارئ 24 ساعة في جميع الفروع.</p>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1558002038-1055907df827?w=600');">
+                        <div class="service-icon"><i class="fas fa-tools"></i></div>
+                    </div>
+                    <div class="service-content">
+                        <h3>صيانة الأقفال</h3>
+                        <p>إصلاح وصيانة جميع أنواع الأقفال المنزلية والتجارية. تغيير بكرات الأبواب، تصليح الكوالين، تركيب أقفال إلكترونية.</p>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1581092921461-eab62e97a782?w=600');">
+                        <div class="service-icon"><i class="fas fa-shield-alt"></i></div>
+                    </div>
+                    <div class="service-content">
+                        <h3>أقفال وكوالين أمن</h3>
+                        <p>تركيب أقفال عالية الأمان من أفضل الماركات العالمية. كوالين إلكترونية، أقفال بصمة، أقفال فنادق وشقق.</p>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <div class="service-img" style="background-image: url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600');">
+                        <div class="service-icon"><i class="fas fa-door-open"></i></div>
+                    </div>
+                    <div class="service-content">
+                        <h3>تركيب وإصلاح الأبواب</h3>
+                        <p>تركيب أبواب جديدة، تعديل الأبواب القديمة، تركيب مسكات وكوالين، صيانة شاملة لجميع أنواع الأبواب الخشبية والحديدية.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Branches Section -->
+    <section class="section branches-section">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>فروعنا</h2>
+                <p>11 فرع في ينبع والمحافظات المجاورة لخدمتكم</p>
+            </div>
+
+            <div class="branches-tabs fade-in">
+                <button class="tab-btn active" onclick="showTab('yanbu')">📍 ينبع</button>
+                <button class="tab-btn" onclick="showTab('provinces')">🗺️ فروع أخرى</button>
+            </div>
+
+            <!-- Yanbu Branches -->
+            <div id="yanbu" class="tab-content fade-in" style="display: block;">
+                <div class="branches-grid">
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - شارع الحنان</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> ينبع - شارع الحنان</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966530582280" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966530582280" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - شارع الحنان (فرع 2)</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> ينبع - شارع الحنان</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966590350017" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966590350017" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - الصناعية</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> ينبع - المنطقة الصناعية</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966536399727" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966536399727" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - نادي المجد</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> ينبع - نادي المجد</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966562688020" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966562688020" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - الشرم</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> ينبع - حي الشرم</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966536399727" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966536399727" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Provinces Branches -->
+            <div id="provinces" class="tab-content fade-in" style="display: none;">
+                <div class="branches-grid">
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - أملج</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> محافظة أملج</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966581547184" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966581547184" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">مفتاح أملج</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> محافظة أملج</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966537832998" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966537832998" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">مفتاح رابغ الأصلي</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> محافظة رابغ</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966537832998" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966537832998" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - بدر</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> محافظة بدر</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966530622188" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966530622188" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - الوجه</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> محافظة الوجه</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966541608016" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966541608016" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                    <div class="branch-card">
+                        <div class="branch-header">
+                            <div class="branch-icon"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="branch-name">أستاذ المفاتيح - مهد الذهب</div>
+                                <div class="branch-location"><i class="fas fa-map-marker-alt"></i> محافظة مهد الذهب</div>
+                            </div>
+                        </div>
+                        <div class="branch-actions">
+                            <a href="tel:966536625615" class="btn-call"><i class="fas fa-phone"></i> اتصال</a>
+                            <a href="https://wa.me/966536625615" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Section -->
+    <section class="section admin-section">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2 style="color: white;">رقم الإدارة والشكاوى والطوارئ</h2>
+                <p style="color: rgba(255,255,255,0.7);">للاستفسارات والشكاوى والطوارئ على مدار الساعة</p>
+            </div>
+            <div class="admin-card fade-in">
+                <div class="admin-label">الإدارة العامة</div>
+                <div class="admin-number">
+                    <a href="tel:966590350017">0590 350 017</a>
+                </div>
+                <div class="admin-desc">
+                    <i class="fas fa-clock"></i> متواجدون على مدار الساعة<br>
+                    <i class="fas fa-headset"></i> خدمة عملاء متميزة<br>
+                    <i class="fas fa-exclamation-circle"></i> طوارئ - شكاوى - اقتراحات
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>الأسئلة الشائعة</h2>
+                <p>اضغط على السؤال لمعرفة الإجابة</p>
+            </div>
+            <div class="faq-container fade-in">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>كم يستغرق فتح باب المنزل في حالة الطوارئ؟</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>في حالات الطوارئ، يصل فريقنا إلى موقعك خلال 15-30 دقيقة حسب الموقع، ويتم فتح الباب خلال 5-10 دقائق بدون أي تلف أو خدش باستخدام أدوات احترافية خاصة.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>هل يمكن برمجة ريموت السيارة بدون المفتاح الأصلي؟</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نعم، نستطيع برمجة ريموت جديد لمعظم أنواع السيارات حتى بدون المفتاح الأصلي باستخدام أحدث أجهزة البرمجة. نخدم جميع الماركات: تويوتا، نيسان، هيونداي، فورد، لكزس، كيا، شيفروليه وغيرها.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>هل تقدمون خدمة منازل وشركات؟</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>بالتأكيد! نقدم خدمات شاملة للمنازل والشركات تشمل: تركيب الأقفال، تغيير الكوالين، تركيب أقفال إلكترونية وبصمة، صيانة الأبواب، ونسخ مفاتيح الخزائن.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>ما هي ساعات عمل الفروع؟</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>الفروع الرئيسية تعمل من 8 صباحاً حتى 12 منتصف الليل. خدمة الطوارئ متوفرة 24 ساعة في جميع الفروع من خلال الاتصال المباشر أو الواتساب.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">🔑 أستاذ المفاتيح</div>
+            <div class="footer-text">مجموعة محلات متخصصة في المفاتيح والأقفال منذ أكثر من 20 عاماً</div>
+            <div class="footer-social">
+                <a href="https://wa.me/966530582280" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-snapchat"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="copyright">
+                © 2024 أستاذ المفاتيح - جميع الحقوق محفوظة | 11 فرع في ينبع والمحافظات
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/966530582280" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Welcome Modal
+        function closeWelcome() {
+            document.getElementById('welcomeModal').classList.add('hidden');
+        }
+
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // Tab Switching
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).style.display = 'block';
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // FAQ Toggle
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Open clicked item if it wasn't active
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // Scroll Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
